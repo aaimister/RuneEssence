@@ -1,4 +1,4 @@
-package util.paint;
+package aaimister.scripts.util.paint;
 
 import org.powerbot.script.MessageEvent;
 import org.powerbot.script.MessageListener;
@@ -62,13 +62,10 @@ public class Painter implements MessageListener {
 
     private final Image logo;
     private final Image atom;
-
     private final ClientContext ctx;
-
     private final Dimension game;
 
     private GeItem essence = new GeItem(1436);
-
     private String status = "Loading";
     private String location = "Unknown";
 
@@ -91,6 +88,8 @@ public class Painter implements MessageListener {
     private long startXP;
     private long currentXP;
 
+    private boolean open;
+
     public Painter(Image logo, Image atom, ClientContext ctx) {
         this.logo = logo;
         this.atom = atom;
@@ -99,6 +98,7 @@ public class Painter implements MessageListener {
         startTime = System.currentTimeMillis();
         startXP = currentXP = ctx.skills.experience(currentSkill);
         price = essence.price;
+        open = true;
     }
 
     private String getDots() {
@@ -136,7 +136,10 @@ public class Painter implements MessageListener {
     }
 
     public void mousePressed(MouseEvent e) {
-        //Do nothing.
+        //557, 544, 15, 15
+        if (e.getX() >= 557 && e.getX() <= (557 + 15) && e.getY() >= 544 && e.getY() <= (544 + 15)) {
+            open = !open;
+        }
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -206,17 +209,18 @@ public class Painter implements MessageListener {
             ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         //}
 
-        //Background
-        g.setColor(MainColor[color]);
-        g.fillRect(3, 370, 569, 189);
-        g.setColor(LineColor[color]);
-        g.drawRect(3, 370, 569, 189);
-        //Logo
-        g.drawImage(logo, 56, 396, null);
-        g.drawImage(atom, 32, 415, null);
-        g.setColor(LineColor[color]);
-        g.setFont(CAM_8);
-        g.drawString("By Aaimister (c) " + "1.00", 464, 550);
+        if (open) {
+            //Background
+            g.setColor(MainColor[color]);
+            g.fillRect(3, 370, 569, 189);
+            g.setColor(LineColor[color]);
+            g.drawRect(3, 370, 569, 189);
+            //Logo
+            g.drawImage(logo, 56, 396, null);
+            g.drawImage(atom, 32, 415, null);
+            g.setColor(LineColor[color]);
+            g.setFont(CAM_8);
+            g.drawString("By Aaimister (c) " + "1.00", 464, 550);
 //        //Prev Button
 //        g.setColor(BoxColor[color]);
 //        g.fillRect(21, 488, 17, 15);
@@ -237,67 +241,76 @@ public class Painter implements MessageListener {
 //            //Shadow
 //        g.setColor(White90);
 //        g.fillRect(481, 488, 17, 7);
-        //Main Box
-        g.setColor(BoxColor[color]);
-        g.fillRect(56, 430, 402, 124);
-        g.setColor(LineColor[color]);
-        g.drawRect(56, 430, 402, 124);
-        calculateStat();
+            //Main Box
+            g.setColor(BoxColor[color]);
+            g.fillRect(56, 430, 402, 124);
+            g.setColor(LineColor[color]);
+            g.drawRect(56, 430, 402, 124);
+            calculateStat();
             //Column 1
-        g.setColor(LineColor[color]);
-        g.setFont(CAM_12);
-        g.drawString("Time running: " + formatTime(totalTime), 63, 447);
-        g.drawString("Location: " + location, 63, 461);
-        g.drawString("Status: " + status + getDots(), 63, 475);
-        g.drawString("Current Essence: " + "Normal", 63, 489);
-        g.drawString("Total Min. XP: " + formatter.format(gainedXP), 63, 504);
-        g.drawString("Total Min. XP/h: " + formatter.format(hourXP), 63, 518);
-        g.drawString("Current Lvl: " + ctx.skills.realLevel(currentSkill), 63, 532);
-        g.drawString("Gained Lvl(s): " + gainedLevel, 63, 546);
+            g.setColor(LineColor[color]);
+            g.setFont(CAM_12);
+            g.drawString("Time running: " + formatTime(totalTime), 63, 447);
+            g.drawString("Location: " + location, 63, 461);
+            g.drawString("Status: " + status + getDots(), 63, 475);
+            g.drawString("Current Essence: " + "Normal", 63, 489);
+            g.drawString("Total Min. XP: " + formatter.format(gainedXP), 63, 504);
+            g.drawString("Total Min. XP/h: " + formatter.format(hourXP), 63, 518);
+            g.drawString("Current Lvl: " + ctx.skills.realLevel(currentSkill), 63, 532);
+            g.drawString("Gained Lvl(s): " + gainedLevel, 63, 546);
             //Split
-        g.setColor(LineColor[color]);
-        g.fillRect(257, 434, 1, 116);
+            g.setColor(LineColor[color]);
+            g.fillRect(257, 434, 1, 116);
             //Column 2
-        g.setColor(LineColor[color]);
-        g.setFont(CAM_12);
-        g.drawString("Price of Essence: " + price, 264, 447);
-        g.drawString("Total Money: $" + formatter.format(totalGP), 264, 461);
-        g.drawString("Money / Hour: $" + formatter.format(hourGP), 264, 475);
-        g.drawString("Total Essence: " + formatter.format(totalEssence), 264, 489);
-        g.drawString("Essence / Hour: " + formatter.format(hourEssence), 264, 504);
-        g.drawString("Essence to Lvl: " + formatter.format(toLevelEssence), 264, 518);
-        g.drawString("Level In: " + formatTime(timeToLevel), 264, 532);
-        g.drawString("Min. XP to Lvl: " + formatter.format(toLevelXP), 264, 546);
+            g.setColor(LineColor[color]);
+            g.setFont(CAM_12);
+            g.drawString("Price of Essence: " + price, 264, 447);
+            g.drawString("Total Money: $" + formatter.format(totalGP), 264, 461);
+            g.drawString("Money / Hour: $" + formatter.format(hourGP), 264, 475);
+            g.drawString("Total Essence: " + formatter.format(totalEssence), 264, 489);
+            g.drawString("Essence / Hour: " + formatter.format(hourEssence), 264, 504);
+            g.drawString("Essence to Lvl: " + formatter.format(toLevelEssence), 264, 518);
+            g.drawString("Level In: " + formatTime(timeToLevel), 264, 532);
+            g.drawString("Min. XP to Lvl: " + formatter.format(toLevelXP), 264, 546);
             //Shadow
-        g.setColor(White90);
-        g.fillRect(56, 430, 402, 62);
-        //Percent Bar
-        g.setColor(PercentRed);
-        g.fillRect(3, 375, 569, 20);
+            g.setColor(White90);
+            g.fillRect(56, 430, 402, 62);
+            //Percent Bar
+            g.setColor(PercentRed);
+            g.fillRect(3, 375, 569, 20);
             //Green Percentage
-        int bar = (int) (getPercent(currentSkill, ctx.skills.realLevel(currentSkill) + 1) * 5.69);
-        g.setColor(PercentGreen);
-        g.fillRect(3, 375, bar, 20);
-        g.setColor(LineColor[color]);
-        g.drawRect(3, 375, 569, 20);
+            int bar = (int) (getPercent(currentSkill, ctx.skills.realLevel(currentSkill) + 1) * 5.69);
+            g.setColor(PercentGreen);
+            g.fillRect(3, 375, bar, 20);
+            g.setColor(LineColor[color]);
+            g.drawRect(3, 375, 569, 20);
             //Text Percent
-        g.setColor(White);
-        g.setFont(CAM_12);
-        g.drawString("" + getPercent(currentSkill, ctx.skills.realLevel(currentSkill) + 1) + "% to lvl " + (ctx.skills.realLevel(currentSkill) + 1) + " " + "Mining", 230, 390);
+            g.setColor(White);
+            g.setFont(CAM_12);
+            g.drawString("" + getPercent(currentSkill, ctx.skills.realLevel(currentSkill) + 1) + "% to lvl " + (ctx.skills.realLevel(currentSkill) + 1) + " " + "Mining", 230, 390);
             //Shadow
-        g.setColor(White90);
-        g.fillRect(3, 375, 569, 10);
-        //Minimize Button
-        g.setColor(Color.WHITE);
-        g.setFont(CAM_12);
+            g.setColor(White90);
+            g.fillRect(3, 375, 569, 10);
+            //Minimize Button
+            g.setColor(BoxColor[color]);
+            g.fillRect(557, 544, 15, 15);
+            g.setColor(LineColor[color]);
+            g.setFont(CAM_12);
             //Minimize Icon
-        g.drawString("__", 560, 554);
+            g.drawString("__", 560, 554);
+        } else {
+            g.setColor(BoxColor[color]);
+            g.fillRect(557, 544, 15, 15);
             //Maximize Icon
+            g.setColor(LineColor[color]);
+            g.drawRect(560, 547, 9, 9);
+        }
         //g.drawRect(560, 547, 9, 9);
         g.drawRect(557, 544, 15, 15);
             //Shadow
         g.setColor(White90);
         g.fillRect(557, 544, 15, 7);
+
 
         drawMouse(g);
     }

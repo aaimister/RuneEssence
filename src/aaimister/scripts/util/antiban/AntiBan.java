@@ -1,4 +1,4 @@
-package util.antiban;
+package aaimister.scripts.util.antiban;
 
 import org.powerbot.script.*;
 import org.powerbot.script.rt6.ClientContext;

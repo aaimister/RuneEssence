@@ -1,18 +1,18 @@
-package runeessence;
+package aaimister.scripts.runeessence;
 
+import aaimister.scripts.util.antiban.AntiBan;
+import aaimister.scripts.util.paint.Painter;
 import org.powerbot.script.*;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.*;
 import org.powerbot.script.rt6.ClientContext;
-import util.antiban.AntiBan;
-import util.paint.Painter;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.concurrent.Callable;
 
-@Script.Manifest(name = "Aaimister's Rune Essence", description = "Mine essence.", properties = "version=1.00")
+@Script.Manifest(name = "Aaimister's Rune Essence", description = "Mine essence.", properties = "author=Aaimister;topic=1327093;client=6;version=1.00")
 public class RuneEssence extends PollingScript<ClientContext> implements PaintListener, MouseListener, MessageListener {
 
     private final Area cityArea = new Area(new Tile(3234, 3387, 0), new Tile(3268, 3440, 0));
